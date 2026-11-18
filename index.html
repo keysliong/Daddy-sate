@@ -129,6 +129,51 @@
   .final-btns{margin-top:22px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
   .ghost{padding:10px 18px;border-radius:999px;background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.25);font:13px var(--mono)}
 
+  /* ---------- Мини-игра с багами ---------- */
+  #bugs{background:radial-gradient(ellipse at top,#4a0f14,#0d1117 70%)}
+  .bug-wrap{width:min(860px,100%);margin:auto;text-align:center}
+  .bug-wrap h2{font-size:clamp(26px,4.5vw,42px);font-weight:900;margin:6px 0}
+  .bug-wrap .lead{color:#e6b3b3;font-size:17px;margin-bottom:12px}
+  .hud{display:flex;justify-content:center;gap:24px;font:700 18px var(--mono);margin-bottom:10px}
+  #field{position:relative;height:min(50vh,440px);border-radius:16px;overflow:hidden;touch-action:manipulation;user-select:none;
+    background:repeating-linear-gradient(0deg,rgba(255,255,255,.03) 0 1px,transparent 1px 28px),linear-gradient(#1a0d10,#120a0c);
+    border:1px solid #5c1d24;box-shadow:inset 0 0 60px rgba(255,40,40,.15)}
+  .bug{position:absolute;left:0;top:0;font-size:38px;line-height:1;cursor:crosshair;will-change:transform;padding:6px}
+  .splat{position:absolute;font-size:44px;pointer-events:none;animation:splat .6s forwards}
+  @keyframes splat{from{transform:scale(.4)}60%{transform:scale(1.3)}to{transform:scale(1.5);opacity:0}}
+  .bugmsg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;
+    font:900 clamp(22px,4vw,34px) var(--sans);text-shadow:0 4px 20px rgba(0,0,0,.6);pointer-events:none;padding:16px}
+  .log{height:66px;overflow:hidden;margin-top:10px;font:12px/1.4 var(--mono);color:#3fb950;text-align:left;
+    background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:6px 12px;display:flex;flex-direction:column;justify-content:flex-end}
+
+  /* ---------- Торт ---------- */
+  .cake-box{margin:28px auto 0;display:flex;flex-direction:column;align-items:center;gap:12px}
+  .cake{position:relative;width:220px;height:170px}
+  .tier{position:absolute;left:50%;transform:translateX(-50%);border-radius:14px 14px 10px 10px}
+  .tier.bottom{bottom:0;width:220px;height:80px;background:linear-gradient(#ff8fc4,#e2558f)}
+  .tier.top{bottom:72px;width:160px;height:58px;background:linear-gradient(#fff0f7,#ffc7e0)}
+  .tier::before{content:"";position:absolute;left:0;right:0;top:0;height:18px;border-radius:14px 14px 0 0;
+    background:radial-gradient(circle at 10px 0,#fff 10px,transparent 11px) 0 0/22px 18px repeat-x}
+  .tier.bottom::after{content:"PHP 8 ♥";position:absolute;inset:auto 0 18px;font:900 18px var(--mono);color:#fff;opacity:.85}
+  .candles{position:absolute;bottom:128px;left:50%;transform:translateX(-50%);display:flex;gap:16px}
+  .candle{position:relative;width:12px;height:40px;border-radius:3px;cursor:pointer;
+    background:repeating-linear-gradient(45deg,#7ee8fa 0 6px,#fff 6px 12px)}
+  .flame{position:absolute;left:50%;bottom:38px;width:14px;height:24px;margin-left:-7px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;
+    background:radial-gradient(circle at 50% 70%,#fff 15%,#ffd36e 40%,#ff7a18 75%);box-shadow:0 0 18px 6px rgba(255,180,60,.6);
+    animation:flick .15s infinite alternate;transform-origin:50% 100%}
+  @keyframes flick{to{transform:scale(.9,1.08) rotate(3deg)}}
+  .candle.out .flame{display:none}
+  .candle.out::after{content:"";position:absolute;left:2px;bottom:40px;width:8px;height:8px;border-radius:50%;
+    background:rgba(200,200,200,.6);animation:smoke 1.6s forwards}
+  @keyframes smoke{to{transform:translateY(-50px) scale(3);opacity:0}}
+  #cakeMsg{font:700 16px var(--mono);color:#ffd36e;min-height:1.5em}
+  .egg-hint{margin-top:18px;font:12px var(--mono);color:#6e7681}
+  .ele{position:fixed;top:-60px;font-size:44px;z-index:60;pointer-events:none;animation:rain linear forwards}
+  @keyframes rain{to{transform:translateY(calc(100vh + 120px)) rotate(var(--r))}}
+  .toast{position:fixed;left:50%;top:20px;transform:translateX(-50%);z-index:70;background:#777bb4;color:#fff;
+    font:700 15px var(--mono);padding:10px 18px;border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.4);animation:toast 3s forwards}
+  @keyframes toast{0%{opacity:0;transform:translate(-50%,-20px)}10%,85%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
+
   #fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50}
   .dots{position:fixed;bottom:18px;left:0;right:0;display:flex;justify-content:center;gap:8px;z-index:40}
   .dots i{width:8px;height:8px;border-radius:99px;background:rgba(255,255,255,.35);transition:all .3s}
@@ -161,6 +206,19 @@
 <!-- 1–6 Фото генерируются из JS -->
 <div id="photos"></div>
 
+<!-- Мини-игра -->
+<section class="slide" id="bugs">
+  <div class="bug-wrap">
+    <div class="num" style="color:#ff7b72">// hotfix.php — пятница, 18:59 🔥</div>
+    <h2>🚨 Прод упал! Раздави баги</h2>
+    <p class="lead">Перед тортом — немного работы. Тапни 12 багов за 20 секунд.</p>
+    <div class="hud"><span>🐛 <b id="bugScore">0</b>/12</span><span>⏱ <b id="bugTime">20</b>s</span></div>
+    <div id="field"><div class="bugmsg" id="bugMsg"></div></div>
+    <div class="log" id="bugLog"></div>
+    <button class="next" id="bugNext" style="visibility:hidden">compile() →</button>
+  </div>
+</section>
+
 <!-- 7. Код -->
 <section class="slide" id="code">
   <div class="challenge">
@@ -191,12 +249,21 @@
     <div class="sub">&lt;?php echo "Ты лучший папа на свете"; // Build succeeded ✓</div>
     <div class="orbit" id="orbit"></div>
     <ul class="wishes" id="wishes"></ul>
-    <div class="gifs"><img src="gif/cake.gif" alt="Торт со свечами"><img src="gif/fireworks.gif" alt="Салют"></div>
+    <div class="cake-box">
+      <div class="cake" id="cake">
+        <div class="candles" id="candles"></div>
+        <div class="tier top"></div><div class="tier bottom"></div>
+      </div>
+      <div id="cakeMsg">Загадай желание и задуй свечи! 🕯️</div>
+      <button class="ghost" id="micBtn">🎤 Задуть в микрофон</button>
+    </div>
+    <div class="gifs"><img src="gif/star.gif" alt=""><img src="gif/notes.gif" alt=""><img src="gif/coffee.gif" alt=""></div>
     <div class="love">Я тебя очень люблю! ❤️<br><span style="font-size:.6em;opacity:.8">Твой сын</span></div>
     <div class="final-btns">
       <button class="ghost" id="replay">↻ git reset --hard HEAD~11</button>
       <button class="ghost" id="music">🎵 сыграть ещё раз</button>
     </div>
+    <div class="egg-hint">🤫 пасхалка: нажми на заголовок или набери «php»</div>
   </div>
 </section>
 
@@ -277,7 +344,7 @@ PHOTOS.forEach((p,i)=>{
         <h2>${p.title}</h2>
         <p>${p.text}</p>
         <pre class="snippet">${p.code}</pre>
-        <div class="row"><img class="gif" src="${p.gif}" alt=""><button class="next">${i<PHOTOS.length-1?'next() →':'compile() →'}</button></div>
+        <div class="row"><img class="gif" src="${p.gif}" alt=""><button class="next">${i<PHOTOS.length-1?'next() →':'deploy() →'}</button></div>
       </div>
     </div>`;
   photosEl.appendChild(s);
@@ -299,6 +366,7 @@ function go(n){
   confetti(cur === slides.length-1 ? 260 : 90);
   if (slides[cur].id === 'code') setTimeout(()=>ta.focus({preventScroll:true}), 700);
   if (slides[cur].id === 'final') startFinal();
+  if (slides[cur].id === 'bugs') startBugs();
 }
 document.querySelectorAll('.next').forEach(b=>b.onclick=()=>go(cur+1));
 document.addEventListener('keydown',e=>{
@@ -495,7 +563,7 @@ const wl = document.getElementById('wishes');
 WISHES.forEach((w,i)=>{ const li = document.createElement('li'); li.innerHTML = w; li.style.animationDelay = (0.8 + i*0.35)+'s'; wl.appendChild(li); });
 
 function startFinal(){
-  initSky(); skyOn = true; requestAnimationFrame(skyLoop);
+  initSky(); skyOn = true; requestAnimationFrame(skyLoop); resetCandles();
   setTimeout(playSong, 600);
   let k = 0; const iv = setInterval(()=>{ confetti(60); if (++k>3) clearInterval(iv); }, 1200);
 }
@@ -507,6 +575,153 @@ document.getElementById('replay').onclick = ()=>{
   render(); go(1);
 };
 document.getElementById('music').onclick = playSong;
+
+/* ================= МИНИ-ИГРА: БАГИ ================= */
+const BUG_GOAL = 12, BUG_TIME = 20;
+const BUG_FIXES = ['Undefined variable $sleep','Call to a member function on null','Missing semicolon on line 42',
+  'N+1 query в UserController','Off-by-one в цикле','Бесконечный цикл в cron','Deprecated: mysql_connect()',
+  'CSRF token mismatch','Memory leak в воркере','Timezone bug (опять)','Merge conflict в composer.lock',
+  '500 Internal Server Error','Race condition в очереди','Пробел вместо таба','== вместо ===','SQL injection в поиске'];
+const field = document.getElementById('field'), bugMsg = document.getElementById('bugMsg');
+let bugsOn = false, bugList = [], bugScore = 0, bugIv, bugEnd = 0;
+function bugLog(t){ const l = document.getElementById('bugLog'); const d = document.createElement('div'); d.textContent = t; l.appendChild(d); while (l.children.length > 4) l.firstChild.remove(); }
+async function startBugs(){
+  clearInterval(bugIv); bugList.forEach(b=>b.el.remove()); bugList = []; bugScore = 0; bugsOn = false;
+  document.getElementById('bugScore').textContent = 0; document.getElementById('bugTime').textContent = BUG_TIME;
+  document.getElementById('bugNext').style.visibility = 'hidden'; document.getElementById('bugLog').innerHTML = '';
+  bugLog('[ALERT] PagerDuty: production is DOWN');
+  for (const t of ['3','2','1','GO! 🔨']){ bugMsg.textContent = t; await sleep(650); }
+  bugMsg.textContent = '';
+  bugsOn = true; bugEnd = performance.now() + BUG_TIME*1000;
+  for (let i=0;i<6;i++) spawnBug();
+  bugIv = setInterval(()=>{
+    const left = Math.max(0, Math.ceil((bugEnd - performance.now())/1000));
+    document.getElementById('bugTime').textContent = left;
+    if (left <= 0) endBugs(false);
+  }, 200);
+  requestAnimationFrame(bugLoop);
+}
+function spawnBug(){
+  const el = document.createElement('span'); el.className = 'bug';
+  el.textContent = ['🐛','🪲','🐞','🦗'][Math.floor(Math.random()*4)];
+  const W = field.clientWidth, H = field.clientHeight, sp = (1.4 + Math.random()*2.2) * Math.max(1, W/600);
+  const a = Math.random()*Math.PI*2;
+  const b = { el, x: Math.random()*(W-50), y: Math.random()*(H-50), vx: Math.cos(a)*sp, vy: Math.sin(a)*sp };
+  el.addEventListener('pointerdown', e=>{ e.preventDefault(); squash(b); });
+  field.appendChild(el); bugList.push(b);
+}
+function bugLoop(){
+  if (!bugsOn) return;
+  const W = field.clientWidth - 50, H = field.clientHeight - 50;
+  for (const b of bugList){
+    if (Math.random() < .02){ const a = Math.atan2(b.vy,b.vx) + (Math.random()-.5)*2, s = Math.hypot(b.vx,b.vy); b.vx = Math.cos(a)*s; b.vy = Math.sin(a)*s; }
+    b.x += b.vx; b.y += b.vy;
+    if (b.x < 0 || b.x > W){ b.vx *= -1; b.x = Math.max(0, Math.min(W, b.x)); }
+    if (b.y < 0 || b.y > H){ b.vy *= -1; b.y = Math.max(0, Math.min(H, b.y)); }
+    b.el.style.transform = `translate(${b.x}px,${b.y}px) scaleX(${b.vx>0?-1:1})`;
+  }
+  requestAnimationFrame(bugLoop);
+}
+function squash(b){
+  if (!bugsOn) return;
+  const s = document.createElement('span'); s.className = 'splat'; s.textContent = '💥';
+  s.style.left = b.x+'px'; s.style.top = b.y+'px'; field.appendChild(s); setTimeout(()=>s.remove(), 600);
+  b.el.remove(); bugList = bugList.filter(x=>x!==b);
+  bugScore++; document.getElementById('bugScore').textContent = bugScore;
+  bugLog('[FIXED] ' + BUG_FIXES[Math.floor(Math.random()*BUG_FIXES.length)]);
+  beep(600 + bugScore*40, .07);
+  if (bugScore >= BUG_GOAL) endBugs(true); else spawnBug();
+}
+function endBugs(win){
+  if (!bugsOn) return;
+  bugsOn = false; clearInterval(bugIv);
+  bugMsg.innerHTML = win ? '✅ Прод спасён!<small style="font:700 16px var(--mono);margin-top:8px;color:#3fb950">Ты — легенда. Можно домой 🏠</small>'
+                         : '⏰ Баги остались…<small style="font:700 16px var(--mono);margin-top:8px;color:#d29922">но это не баги, а фичи 😄</small>';
+  bugLog(win ? '[OK] All systems operational' : '[INFO] Тикет перенесён в следующий спринт');
+  if (win) confetti(140);
+  document.getElementById('bugNext').style.visibility = 'visible';
+}
+document.getElementById('bugNext').onclick = ()=>{ bugList.forEach(b=>b.el.remove()); bugList = []; go(cur+1); };
+
+/* ================= СВЕЧИ ================= */
+const candlesEl = document.getElementById('candles'), cakeMsg = document.getElementById('cakeMsg');
+let micStream = null, micOn = false;
+function resetCandles(){
+  candlesEl.innerHTML = '';
+  for (let i=0;i<5;i++){ const c = document.createElement('div'); c.className = 'candle'; c.innerHTML = '<i class="flame"></i>'; c.onclick = ()=>blow(c); candlesEl.appendChild(c); }
+  cakeMsg.textContent = 'Загадай желание и задуй свечи! 🕯️';
+  document.getElementById('micBtn').style.display = '';
+}
+function blow(c){
+  if (!c || c.classList.contains('out')) return;
+  c.classList.add('out'); beep(300, .05);
+  const left = candlesEl.querySelectorAll('.candle:not(.out)').length;
+  if (left === 0){
+    stopMic();
+    cakeMsg.textContent = '✨ Желание загадано! Исполнится в ближайшем релизе.';
+    document.getElementById('micBtn').style.display = 'none';
+    confetti(300);
+    for (let i=0;i<6;i++) setTimeout(()=>burst(innerWidth*Math.random(), innerHeight*Math.random()*.5), i*180);
+    [523,659,784,1047].forEach((f,i)=>setTimeout(()=>beep(f,.25),i*120));
+  } else cakeMsg.textContent = `Ещё ${left}! 💨`;
+}
+document.getElementById('micBtn').onclick = async function(){
+  if (micOn) return;
+  try {
+    micStream = await navigator.mediaDevices.getUserMedia({audio:true});
+    const ac = audioCtx(), srcN = ac.createMediaStreamSource(micStream), an = ac.createAnalyser();
+    an.fftSize = 1024; srcN.connect(an);
+    const buf = new Float32Array(an.fftSize); let loud = 0, last = 0; micOn = true;
+    this.textContent = '🎤 Дуй сильнее!';
+    (function listen(t){
+      if (!micOn) return;
+      an.getFloatTimeDomainData(buf);
+      let sum = 0; for (const v of buf) sum += v*v;
+      const rms = Math.sqrt(sum/buf.length);
+      loud = rms > .12 ? loud + 1 : 0;
+      if (loud > 4 && t - last > 250){ last = t; blow(candlesEl.querySelector('.candle:not(.out)')); }
+      requestAnimationFrame(listen);
+    })(0);
+  } catch(e){ cakeMsg.textContent = 'Микрофон недоступен — просто нажми на свечи 👆'; }
+};
+function stopMic(){ micOn = false; if (micStream){ micStream.getTracks().forEach(t=>t.stop()); micStream = null; } document.getElementById('micBtn').textContent = '🎤 Задуть в микрофон'; }
+
+/* ================= ПАСХАЛКА: elePHPant ================= */
+function toast(t){ const d = document.createElement('div'); d.className = 'toast'; d.textContent = t; document.body.appendChild(d); setTimeout(()=>d.remove(), 3000); }
+function elephantRain(){
+  toast('🐘 elePHPant mode: ON');
+  for (let i=0;i<40;i++){
+    const e = document.createElement('span'); e.className = 'ele';
+    e.textContent = Math.random() < .85 ? '🐘' : ['🎂','💜','<?php'][i%3];
+    if (e.textContent === '<?php'){ e.style.font = '700 22px var(--mono)'; e.style.color = '#c3b6ff'; }
+    e.style.left = Math.random()*100 + 'vw';
+    e.style.setProperty('--r', (Math.random()*720-360) + 'deg');
+    e.style.animationDuration = (2.5 + Math.random()*2.5) + 's';
+    e.style.animationDelay = (Math.random()*1.5) + 's';
+    document.body.appendChild(e); setTimeout(()=>e.remove(), 7000);
+  }
+  beep(220,.15); setTimeout(()=>beep(330,.2),150);
+}
+let keyBuf = '';
+document.addEventListener('keydown', e=>{
+  if (document.activeElement === ta) return;
+  keyBuf = (keyBuf + (e.key||'').toLowerCase()).slice(-3);
+  if (keyBuf === 'php' || keyBuf === 'зрз') elephantRain();
+});
+document.querySelector('.final-wrap h1').addEventListener('click', elephantRain);
+
+/* ================= СЕКРЕТ ДЛЯ DEVTOOLS ================= */
+console.log('%c<?php\n%c// Пап, я знал, что ты откроешь DevTools 😄\n// Код тут не минифицирован — можешь сделать code review.\n// Но сначала: С ДНЁМ РОЖДЕНИЯ! 🎂\n%c$review = "LGTM ✅ Approved by your son";',
+  'color:#777bb4;font:bold 28px monospace', 'color:#8b949e;font:14px monospace', 'color:#3fb950;font:bold 14px monospace');
+console.log('%c🐘 Подсказка: набери php на клавиатуре', 'color:#c3b6ff;font:13px monospace');
+
+function beep(f, d){
+  const ac = AC; if (!ac) return;
+  const o = ac.createOscillator(), g = ac.createGain(), t = ac.currentTime;
+  o.type = 'square'; o.frequency.value = f;
+  g.gain.setValueAtTime(.06, t); g.gain.exponentialRampToValueAtTime(.001, t+d);
+  o.connect(g).connect(ac.destination); o.start(t); o.stop(t+d);
+}
 
 /* ================= МУЗЫКА: Happy Birthday на WebAudio ================= */
 let AC;
