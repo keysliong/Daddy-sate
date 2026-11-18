@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>С днём рождения, папа!</title>
+<meta name="description" content="Открытка для лучшего папы и senior PHP-разработчика">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+    --sans:'Nunito',system-ui,sans-serif;
+    --ink:#0d1117;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:var(--ink);color:#fff;font-family:var(--sans);overflow:hidden}
+  button{font:inherit;cursor:pointer;border:0}
+
+  .slide{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+    padding:24px 16px 72px;opacity:0;visibility:hidden;transform:scale(1.04);
+    transition:opacity .7s ease,transform .7s ease,visibility 0s .7s;overflow-y:auto}
+  .slide.active{opacity:1;visibility:visible;transform:none;transition:opacity .7s ease,transform .7s ease}
+
+  /* ---------- Терминал-заставка ---------- */
+  #boot{background:radial-gradient(ellipse at top,#1b2333,#0d1117 70%)}
+  .term{width:min(680px,100%);background:#161b22;border:1px solid #30363d;border-radius:12px;
+    box-shadow:0 30px 80px rgba(0,0,0,.6);overflow:hidden}
+  .term-bar{display:flex;gap:8px;padding:12px 14px;background:#21262d;align-items:center}
+  .term-bar i{width:12px;height:12px;border-radius:50%;display:block}
+  .term-bar span{margin-left:auto;margin-right:auto;font:12px var(--mono);color:#8b949e}
+  .term-body{padding:20px;font:14px/1.7 var(--mono);color:#c9d1d9;min-height:280px;white-space:pre-wrap;word-break:break-word}
+  .ok{color:#3fb950}.warn{color:#d29922}.pr{color:#58a6ff}.dim{color:#8b949e}.pink{color:#ff7eb6}
+  .cursor{display:inline-block;width:.6em;height:1.1em;background:#c9d1d9;vertical-align:-.2em;animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  .btn{display:inline-block;margin-top:18px;padding:14px 24px;border-radius:10px;font:700 16px var(--mono);
+    background:#238636;color:#fff;box-shadow:0 0 0 0 rgba(63,185,80,.6);animation:pulse 1.8s infinite;
+    opacity:0;transform:translateY(8px);transition:opacity .4s,transform .4s}
+  .btn.show{opacity:1;transform:none}
+  @keyframes pulse{70%{box-shadow:0 0 0 14px rgba(63,185,80,0)}100%{box-shadow:0 0 0 0 rgba(63,185,80,0)}}
+
+  /* ---------- Фото-слайды ---------- */
+  .photo-slide{background:var(--bg)}
+  .photo-slide::before{content:"";position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(circle at 20% 20%,rgba(255,255,255,.25),transparent 40%),
+               radial-gradient(circle at 80% 90%,rgba(0,0,0,.25),transparent 45%)}
+  .card{position:relative;display:grid;grid-template-columns:auto 1fr;gap:40px;align-items:center;
+    width:min(1000px,100%);margin:auto}
+  .polaroid{background:#fff;padding:12px 12px 46px;border-radius:6px;box-shadow:0 25px 60px rgba(0,0,0,.35);
+    transform:rotate(var(--rot,-3deg));position:relative;justify-self:center}
+  .polaroid img{display:block;max-height:62vh;max-width:min(520px,80vw);width:auto;border-radius:2px}
+  .polaroid figcaption{position:absolute;left:0;right:0;bottom:12px;text-align:center;
+    font:800 18px var(--sans);color:#333}
+  .tape{position:absolute;top:-14px;left:50%;width:110px;height:28px;margin-left:-55px;
+    background:rgba(255,255,255,.55);transform:rotate(2deg);box-shadow:0 2px 6px rgba(0,0,0,.1)}
+  .active .polaroid{animation:drop .9s cubic-bezier(.2,1.4,.4,1) both}
+  @keyframes drop{from{transform:translateY(-60px) rotate(12deg);opacity:0}}
+  .text{color:var(--fg,#fff);text-shadow:0 2px 12px rgba(0,0,0,.18)}
+  .num{font:700 14px var(--mono);opacity:.85;letter-spacing:.08em}
+  .text h2{font-size:clamp(28px,5vw,48px);line-height:1.05;margin:10px 0 14px;font-weight:900}
+  .text p{font-size:clamp(17px,2.2vw,21px);line-height:1.5;max-width:30em}
+  .snippet{margin-top:18px;display:inline-block;background:rgba(13,17,23,.82);color:#c9d1d9;text-shadow:none;
+    font:13px/1.6 var(--mono);padding:12px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.15);max-width:100%;overflow-x:auto}
+  .gif{width:120px;height:120px;border-radius:16px;image-rendering:pixelated;margin-top:18px;
+    box-shadow:0 10px 30px rgba(0,0,0,.35);border:3px solid rgba(255,255,255,.7);display:block}
+  .active .gif{animation:pop .6s .5s cubic-bezier(.2,1.6,.4,1) both}
+  @keyframes pop{from{transform:scale(0) rotate(-20deg)}}
+  .row{display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap}
+  .next{margin-top:22px;padding:14px 26px;border-radius:999px;background:#fff;color:#111;
+    font:700 16px var(--mono);box-shadow:0 8px 24px rgba(0,0,0,.25);transition:transform .2s}
+  .next:hover{transform:translateY(-2px) scale(1.03)}
+  .floaty{position:absolute;font-size:34px;animation:float 6s ease-in-out infinite;pointer-events:none;opacity:.9}
+  @keyframes float{50%{transform:translateY(-22px) rotate(10deg)}}
+
+  /* ---------- Задание с кодом ---------- */
+  #code{background:radial-gradient(ellipse at bottom,#2a1f4d,#0d1117 70%)}
+  .challenge{width:min(760px,100%);margin:auto}
+  .challenge h2{font-size:clamp(26px,4.5vw,40px);font-weight:900;margin-bottom:6px}
+  .challenge h2 span{background:linear-gradient(90deg,#777bb4,#c3b6ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .challenge .lead{color:#b7bdd0;font-size:17px;margin-bottom:16px}
+  .editor{position:relative;background:#161b22;border:1px solid #30363d;border-radius:12px;overflow:hidden;
+    box-shadow:0 30px 80px rgba(0,0,0,.5);cursor:text}
+  .editor.focus{border-color:#777bb4;box-shadow:0 0 0 3px rgba(119,123,180,.35),0 30px 80px rgba(0,0,0,.5)}
+  .editor .term-bar span{font-size:12px}
+  .lines,.snippet,.wishes,.term-body{font-variant-ligatures:none}
+  .lines{display:flex;font:clamp(12px,2.6vw,15px)/1.75 var(--mono);padding:14px 0;overflow-x:auto}
+  .gutter{color:#484f58;text-align:right;padding:0 14px;user-select:none;white-space:pre}
+  #src{white-space:pre;padding-right:16px;color:#3a4250;flex:1}
+  #src .c{position:relative}
+  #src .cur{background:rgba(119,123,180,.35);color:#fff;border-radius:2px;box-shadow:inset 2px 0 0 #c3b6ff;animation:curb 1s steps(1) infinite}
+  @keyframes curb{50%{box-shadow:inset 2px 0 0 transparent}}
+  #src .bad{background:#da3633;color:#fff}
+  .k{color:#ff7b72}.v{color:#79c0ff}.s{color:#a5d6ff}.t{color:#ffa657}.f{color:#d2a8ff}.p{color:#c9d1d9}.tag{color:#8b949e}
+  #ta{position:absolute;opacity:0;left:0;top:0;width:1px;height:1px;font-size:16px;border:0;resize:none}
+  .stats{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px;font:13px var(--mono);color:#8b949e;align-items:center}
+  .bar{flex:1;min-width:140px;height:8px;background:#21262d;border-radius:99px;overflow:hidden}
+  .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#777bb4,#3fb950);transition:width .15s}
+  .copilot{background:none;color:#6e7681;font:12px var(--mono);text-decoration:underline dotted;margin-left:auto}
+  .tap-hint{position:absolute;inset:auto 0 12px 0;text-align:center;font:12px var(--mono);color:#6e7681;pointer-events:none}
+  .run{margin-top:14px;display:none;font:14px/1.7 var(--mono)}
+  .shake{animation:shake .25s}
+  @keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+  /* ---------- Финал ---------- */
+  #final{background:#03010a;padding-bottom:40px}
+  #sky{position:fixed;inset:0;width:100%;height:100%}
+  .final-wrap{position:relative;text-align:center;max-width:900px;margin:auto;z-index:1}
+  .final-wrap h1{font-size:clamp(40px,9vw,96px);line-height:1;font-weight:900;
+    background:linear-gradient(90deg,#ff7eb6,#ffd36e,#7ee8fa,#c3b6ff,#ff7eb6);background-size:300% 100%;
+    -webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 6s linear infinite;
+    filter:drop-shadow(0 0 30px rgba(255,126,182,.35))}
+  @keyframes shine{to{background-position:300% 0}}
+  .final-wrap .sub{font:700 clamp(14px,2.4vw,18px) var(--mono);color:#7ee8fa;margin:14px 0 26px}
+  .orbit{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin:0 auto 26px}
+  .orbit img{width:clamp(64px,13vw,104px);height:clamp(64px,13vw,104px);object-fit:cover;border-radius:50%;
+    border:3px solid var(--c);box-shadow:0 0 22px var(--c);animation:bob 4s ease-in-out infinite}
+  .orbit img:nth-child(2n){animation-delay:-2s}
+  @keyframes bob{50%{transform:translateY(-10px)}}
+  .wishes{display:inline-block;text-align:left;background:rgba(22,27,34,.75);backdrop-filter:blur(6px);
+    border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:18px 22px;font:clamp(13px,2.3vw,15px)/1.8 var(--mono);color:#c9d1d9;max-width:100%}
+  .wishes li{list-style:none;opacity:0;transform:translateX(-10px)}
+  .active .wishes li{animation:in .5s forwards}
+  @keyframes in{to{opacity:1;transform:none}}
+  .love{margin-top:26px;font-size:clamp(22px,4vw,32px);font-weight:900}
+  .gifs{display:flex;justify-content:center;gap:16px;margin:22px 0 0}
+  .gifs img{width:110px;height:110px;border-radius:16px;image-rendering:pixelated;border:2px solid rgba(255,255,255,.3)}
+  .final-btns{margin-top:22px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  .ghost{padding:10px 18px;border-radius:999px;background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.25);font:13px var(--mono)}
+
+  #fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50}
+  .dots{position:fixed;bottom:18px;left:0;right:0;display:flex;justify-content:center;gap:8px;z-index:40}
+  .dots i{width:8px;height:8px;border-radius:99px;background:rgba(255,255,255,.35);transition:all .3s}
+  .dots i.on{width:26px;background:#fff}
+
+  @media (max-width:760px){
+    .card{grid-template-columns:1fr;gap:28px;text-align:center}
+    .row{justify-content:center}
+    .gif{margin-left:auto;margin-right:auto}
+    .polaroid img{max-height:46vh}
+    .text p{margin:0 auto}
+    .term-body{font-size:13px;padding:16px}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important}}
+</style>
+</head>
+<body>
+
+<canvas id="fx"></canvas>
+
+<!-- 0. Заставка -->
+<section class="slide active" id="boot">
+  <div class="term">
+    <div class="term-bar"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i><span>papa@birthday: ~</span></div>
+    <div class="term-body"><span id="bootText"></span><span class="cursor"></span>
+<button class="btn" id="startBtn">▶ git checkout birthday</button></div>
+  </div>
+</section>
+
+<!-- 1–6 Фото генерируются из JS -->
+<div id="photos"></div>
+
+<!-- 7. Код -->
+<section class="slide" id="code">
+  <div class="challenge">
+    <div class="num" style="color:#c3b6ff">// final_boss.php</div>
+    <h2>Последний шаг, <span>Senior PHP Developer</span> 🔐</h2>
+    <p class="lead">Поздравление зашифровано. Перепиши код руками — без Copilot-а, ты же сеньор 😉<br>
+      <small class="dim">Отступы подставятся сами. Enter — новая строка.</small></p>
+    <div class="editor" id="editor">
+      <div class="term-bar"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i><span>birthday.php — PhpStorm</span></div>
+      <div class="lines"><div class="gutter" id="gutter"></div><div id="src"></div></div>
+      <div class="tap-hint" id="tapHint">⌨️ нажми сюда и начинай печатать</div>
+      <textarea id="ta" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="Поле для ввода кода"></textarea>
+    </div>
+    <div class="stats">
+      <div class="bar"><i id="prog"></i></div>
+      <span id="pct">0%</span><span>ошибок: <b id="errs">0</b></span><span id="time">0.0s</span>
+      <button class="copilot" id="copilot" title="Сын разрешает 🙂">🤖 позвать Copilot</button>
+    </div>
+    <div class="run term" id="run"><div class="term-bar"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i><span>Terminal</span></div><div class="term-body" id="runText" style="min-height:120px"></div></div>
+  </div>
+</section>
+
+<!-- 8. Финал -->
+<section class="slide" id="final">
+  <canvas id="sky"></canvas>
+  <div class="final-wrap">
+    <h1>С Днём Рождения,<br>Папа!</h1>
+    <div class="sub">&lt;?php echo "Ты лучший папа на свете"; // Build succeeded ✓</div>
+    <div class="orbit" id="orbit"></div>
+    <ul class="wishes" id="wishes"></ul>
+    <div class="gifs"><img src="gif/cake.gif" alt="Торт со свечами"><img src="gif/fireworks.gif" alt="Салют"></div>
+    <div class="love">Я тебя очень люблю! ❤️<br><span style="font-size:.6em;opacity:.8">Твой сын</span></div>
+    <div class="final-btns">
+      <button class="ghost" id="replay">↻ git reset --hard HEAD~11</button>
+      <button class="ghost" id="music">🎵 сыграть ещё раз</button>
+    </div>
+  </div>
+</section>
+
+<div class="dots" id="dots"></div>
+
+<script>
+/* ================= ДАННЫЕ ================= */
+const PHOTOS = [
+  { img:'img/1-airport.jpg', year:'2019', title:'Первые шаги — вместе', bg:'linear-gradient(135deg,#ff416c,#ff4b2b)',
+    text:'Ты держал меня за руку, когда я только учился ходить. И держишь до сих пор.',
+    code:`<span class="v">$memories</span>[] = <span class="s">'первые шаги'</span>;`, gif:'gif/heart.gif', emoji:['❤️','👣','🍼'], rot:-4 },
+  { img:'img/2-car.jpg', year:'2021', title:'Самый надёжный пилот', bg:'linear-gradient(135deg,#0f2027,#203a43,#2c5364)',
+    text:'Я сплю, а ты везёшь нас домой. С тобой всегда спокойно.',
+    code:`<span class="k">while</span> (<span class="v">$papa</span>-&gt;<span class="f">drives</span>()) {\n    <span class="v">$son</span>-&gt;<span class="f">sleep</span>();\n}`, gif:'gif/zzz.gif', emoji:['🌙','⭐','🚗'], rot:3 },
+  { img:'img/3-selfie.jpg', year:'commit #3', title:'Лучшая команда', bg:'linear-gradient(135deg,#f7971e,#ffd200)',
+    text:'Мы с тобой — идеальная пара разработчиков: улыбаемся одинаково!',
+    code:`<span class="v">$team</span> = [<span class="v">$papa</span>, <span class="v">$me</span>]; <span class="tag">// 100% совместимость</span>`, gif:'gif/smile.gif', emoji:['😁','🤝','✨'], rot:-2, fg:'#2b1600' },
+  { img:'img/4-cafe.jpg', year:'commit #4', title:'Самое удобное место', bg:'linear-gradient(135deg,#11998e,#38ef7d)',
+    text:'Сидеть у тебя на коленях — самое уютное место в мире. Лучше любого кресла.',
+    code:`<span class="v">$comfort</span> = <span class="t">PHP_INT_MAX</span>;`, gif:'gif/soda.gif', emoji:['🥤','🌭','☀️'], rot:4 },
+  { img:'img/5-kitchen.jpg', year:'commit #5', title:'Обнимашки во время деплоя', bg:'linear-gradient(135deg,#777bb4,#4f5b93,#2d3361)',
+    text:'Даже когда ты в телефоне (наверное, чинишь прод 😄) — я тебя всё равно обнимаю!',
+    code:`<span class="k">try</span> {\n    <span class="v">$papa</span>-&gt;<span class="f">fixProd</span>();\n} <span class="k">finally</span> {\n    <span class="v">$me</span>-&gt;<span class="f">hug</span>(<span class="v">$papa</span>);\n}`, gif:'gif/coffee.gif', emoji:['☕','🐘','💻'], rot:-3 },
+  { img:'img/6-portrait.jpg', year:'v1.0 — stable', title:'Твой главный проект', bg:'linear-gradient(135deg,#b24592,#f15f79)',
+    text:'Это я — твой самый важный проект. Без багов (почти), обновляюсь каждый день, и всё это благодаря тебе.',
+    code:`<span class="v">$son</span> = <span class="k">new</span> <span class="t">Papa\\Junior</span>(); <span class="tag">// лучший релиз</span>`, gif:'gif/star.gif', emoji:['⭐','🚀','🧡'], rot:-3 },
+  { img:'img/7-sauna.jpg', year:'commit #7', title:'С лёгким паром!', bg:'linear-gradient(135deg,#7b4397,#c0763c,#e8b36c)',
+    text:'Баня с тобой — это традиция. Ты терпишь жар, я делаю вид, что тоже 😅',
+    code:`<span class="v">$sauna</span>-&gt;<span class="f">with</span>(<span class="v">$papa</span>)-&gt;<span class="f">temp</span>(<span class="t">100</span>)-&gt;<span class="f">relax</span>();`, gif:'gif/sauna.gif', emoji:['🔥','💦','🧖'], rot:3 },
+  { img:'img/8-hockey.jpg', year:'commit #8', title:'Главные болельщики', bg:'linear-gradient(135deg,#00c6ff,#0072ff)',
+    text:'Ты мой самый главный болельщик, а я — твой! Шайбу, шайбу! 🏒',
+    code:`<span class="f">assert</span>(<span class="v">$papa</span> === <span class="s">'лучший'</span>); <span class="tag">// tests passed ✓</span>`, gif:'gif/puck.gif', emoji:['🏒','🥅','🏆'], rot:2 },
+  { img:'img/9-concert.jpg', year:'commit #9', title:'Вау-эмоции вместе!', bg:'linear-gradient(135deg,#fc466b,#3f5efb)',
+    text:'С тобой каждое событие превращается в ВАУ! Спасибо за все наши приключения.',
+    code:`<span class="v">$wow</span> = <span class="k">true</span>; <span class="tag">// каждый раз, когда мы вместе</span>`, gif:'gif/notes.gif', emoji:['🎤','🎶','🤩'], rot:-2 },
+];
+const ORBIT_COLORS = ['#ff4b6e','#4fc3f7','#ffd200','#38ef7d','#a29bfe','#f15f79','#e8b36c','#00c6ff','#fc466b'];
+
+const TARGET =
+`<?php
+
+class Papa extends SeniorDeveloper
+{
+    public function birthday(): string
+    {
+        $this->age++;
+        return 'Happy Birthday!';
+    }
+}
+
+echo (new Papa())->birthday();`;
+
+const WISHES = [
+  '<span class="k">return</span> [',
+  '  <span class="s">\'Здоровья — больше, чем RAM на проде\'</span>,',
+  '  <span class="s">\'Чистого кода и зелёных тестов ✅\'</span>,',
+  '  <span class="s">\'Чтобы прод не падал в пятницу вечером\'</span>,',
+  '  <span class="s">\'Только интересных задач и далёких дедлайнов\'</span>,',
+  '  <span class="s">\'Зарплату — как у тимлида Google 💸\'</span>,',
+  '  <span class="s">\'И почаще ходить вместе на хоккей 🏒\'</span>,',
+  '];',
+];
+
+/* ================= СЛАЙДЫ ================= */
+const photosEl = document.getElementById('photos');
+PHOTOS.forEach((p,i)=>{
+  const s = document.createElement('section');
+  s.className = 'slide photo-slide';
+  s.style.setProperty('--bg', p.bg);
+  if (p.fg) s.style.setProperty('--fg', p.fg);
+  const floats = p.emoji.map((e,k)=>`<span class="floaty" style="left:${[6,88,78][k]}%;top:${[12,18,80][k]}%;animation-delay:${-k*2}s">${e}</span>`).join('');
+  s.innerHTML = `${floats}
+    <div class="card">
+      <figure class="polaroid" style="--rot:${p.rot}deg"><span class="tape"></span>
+        <img src="${p.img}" alt="Папа и сын — ${p.title}" loading="${i<2?'eager':'lazy'}"><figcaption>${p.year}</figcaption></figure>
+      <div class="text">
+        <div class="num">// ${String(i+1).padStart(2,'0')} / ${String(PHOTOS.length).padStart(2,'0')}</div>
+        <h2>${p.title}</h2>
+        <p>${p.text}</p>
+        <pre class="snippet">${p.code}</pre>
+        <div class="row"><img class="gif" src="${p.gif}" alt=""><button class="next">${i<PHOTOS.length-1?'next() →':'compile() →'}</button></div>
+      </div>
+    </div>`;
+  photosEl.appendChild(s);
+});
+
+const slides = [...document.querySelectorAll('.slide')];
+let cur = 0;
+const dots = document.getElementById('dots');
+slides.forEach(()=>dots.appendChild(document.createElement('i')));
+function paintDots(){ [...dots.children].forEach((d,i)=>d.classList.toggle('on',i===cur)); dots.style.display = (cur>=slides.length-2)?'none':'flex'; }
+paintDots();
+
+function go(n){
+  slides[cur].classList.remove('active');
+  cur = n;
+  slides[cur].classList.add('active');
+  slides[cur].scrollTop = 0;
+  paintDots();
+  confetti(cur === slides.length-1 ? 260 : 90);
+  if (slides[cur].id === 'code') setTimeout(()=>ta.focus({preventScroll:true}), 700);
+  if (slides[cur].id === 'final') startFinal();
+}
+document.querySelectorAll('.next').forEach(b=>b.onclick=()=>go(cur+1));
+document.addEventListener('keydown',e=>{
+  if (slides[cur].classList.contains('photo-slide') && (e.key==='ArrowRight'||e.key===' ')) { e.preventDefault(); go(cur+1); }
+  if (slides[cur].classList.contains('photo-slide') && e.key==='ArrowLeft' && cur>0) go(cur-1);
+});
+
+/* ================= ЗАСТАВКА ================= */
+const BOOT = [
+  ['<span class="pr">$</span> ssh papa@birthday.local', 40],
+  ['\n<span class="dim">Connecting… authenticated with key: son_love.pub</span>', 10],
+  ['\n<span class="ok">[ OK ]</span> Загружаем воспоминания…', 15],
+  ['\n<span class="ok">[ OK ]</span> composer require family/love:^∞', 15],
+  ['\n<span class="ok">[ OK ]</span> Компилируем объятия…', 15],
+  ['\n<span class="warn">[WARN]</span> Обнаружен <span class="pink">лучший папа на свете</span>', 15],
+  ['\n<span class="warn">[WARN]</span> Уровень: Senior. Возраст: +1 🎉', 15],
+  ['\n\n<span class="dim">Сегодня твой день. Готов?</span>', 25],
+];
+(async function boot(){
+  const el = document.getElementById('bootText');
+  let html = '';
+  for (const [line, speed] of BOOT){
+    const parts = line.split(/(<[^>]+>)/);
+    for (const part of parts){
+      if (part.startsWith('<')) { html += part; continue; }
+      for (const ch of part){ html += ch; el.innerHTML = html; await sleep(speed); }
+    }
+    await sleep(260);
+  }
+  document.getElementById('startBtn').classList.add('show');
+})();
+document.getElementById('startBtn').onclick = ()=>{ audioCtx(); go(1); };
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+/* ================= ЗАДАНИЕ С КОДОМ ================= */
+const src = document.getElementById('src'), ta = document.getElementById('ta'), editor = document.getElementById('editor');
+const KW = /\b(class|extends|public|function|return|echo|new)\b/g;
+// подсветка синтаксиса: класс для каждого символа
+const hl = new Array(TARGET.length).fill('p');
+function mark(re, cls){ let m; re.lastIndex=0; while((m=re.exec(TARGET))) for(let i=0;i<m[0].length;i++) hl[m.index+i]=cls; }
+mark(/\b[A-Z]\w*\b|\bstring\b/g,'t'); mark(KW,'k'); mark(/\b\w+(?=\()/g,'f'); mark(/\$\w+/g,'v'); mark(/'[^']*'/g,'s'); mark(/<\?php/g,'tag');
+
+let pos = 0, errors = 0, t0 = null, done = false, badFlash = false, timer;
+const chars = [...TARGET];
+document.getElementById('gutter').textContent = TARGET.split('\n').map((_,i)=>i+1).join('\n');
+
+function esc(c){ return c==='<'?'&lt;':c==='>'?'&gt;':c==='&'?'&amp;':c; }
+function render(){
+  let out = '';
+  for (let i=0;i<chars.length;i++){
+    let c = chars[i];
+    if (i===pos){
+      const shown = c==='\n' ? '↵\n' : esc(c);
+      out += `<span class="c ${badFlash?'bad':'cur'}">${shown}</span>`;
+    } else if (i<pos) out += `<span class="${hl[i]}">${esc(c)}</span>`;
+    else out += esc(c);
+  }
+  src.innerHTML = out;
+  const pct = Math.round(pos/chars.length*100);
+  document.getElementById('prog').style.width = pct+'%';
+  document.getElementById('pct').textContent = pct+'%';
+  document.getElementById('errs').textContent = errors;
+}
+function skipIndent(){ while (pos<chars.length && chars[pos]===' ' && /(^|\n) *$/.test(TARGET.slice(0,pos))) pos++; }
+function norm(ch){ return ({'’':"'",'‘':"'",'`':"'",'“':'"','”':'"','\r':'\n','—':'-','–':'-'})[ch] || ch; }
+
+function typeChar(ch){
+  if (done) return;
+  if (!t0){ t0 = performance.now(); timer = setInterval(()=>document.getElementById('time').textContent=((performance.now()-t0)/1000).toFixed(1)+'s',100); }
+  ch = norm(ch);
+  if (ch === chars[pos]) {
+    pos++;
+    if (ch === '\n') skipIndent();
+  } else if (ch===' ' && chars[pos]==='\n') {
+    return; // лишний пробел в конце строки — прощаем
+  } else {
+    errors++; badFlash = true; editor.classList.remove('shake'); void editor.offsetWidth; editor.classList.add('shake');
+    setTimeout(()=>{ badFlash=false; render(); },180);
+  }
+  render();
+  if (pos >= chars.length) finishCode();
+}
+
+ta.addEventListener('input', ()=>{ const v = ta.value; ta.value=''; for (const ch of v) typeChar(ch); });
+ta.addEventListener('keydown', e=>{
+  if (e.key==='Enter'){ e.preventDefault(); typeChar('\n'); }
+  else if (e.key==='Tab'){ e.preventDefault(); while(chars[pos]===' ') pos++; render(); }
+});
+ta.addEventListener('focus', ()=>{ editor.classList.add('focus'); document.getElementById('tapHint').style.display='none'; });
+ta.addEventListener('blur', ()=>{ editor.classList.remove('focus'); if(!done) document.getElementById('tapHint').style.display=''; });
+editor.addEventListener('click', ()=>ta.focus({preventScroll:true}));
+editor.addEventListener('paste', e=>{ e.preventDefault(); errors+=10; render(); alert('Ctrl+V? Серьёзно, сеньор? 😄 +10 ошибок'); });
+
+document.getElementById('copilot').onclick = async function(){
+  this.disabled = true; this.textContent = '🤖 Copilot печатает… (сын не осуждает)';
+  if (!t0) typeChar(chars[0]);
+  while (!done){ typeChar(chars[pos]); await sleep(28); }
+};
+
+async function finishCode(){
+  done = true; clearInterval(timer); ta.blur();
+  const sec = (performance.now()-t0)/1000;
+  const cpm = Math.round(chars.length/sec*60);
+  const run = document.getElementById('run'), rt = document.getElementById('runText');
+  run.style.display='block'; run.scrollIntoView({behavior:'smooth',block:'nearest'});
+  const lines = [
+    `<span class="pr">$</span> php birthday.php`,
+    `<span class="ok">Happy Birthday!</span> 🎂`,
+    `<span class="dim">Время: ${sec.toFixed(1)}s · ${cpm} симв/мин · ошибок: ${errors}</span>`,
+    `<span class="ok">✓ Уровень Senior подтверждён.</span> Process finished with exit code 0`,
+  ];
+  for (const l of lines){ rt.innerHTML += l + '\n'; await sleep(650); }
+  confetti(120);
+  await sleep(1400);
+  go(cur+1);
+}
+render();
+
+/* ================= КОНФЕТТИ ================= */
+const fx = document.getElementById('fx'), fctx = fx.getContext('2d');
+let parts = [], fxRunning = false;
+function sizeCanvas(c){ const d = Math.min(devicePixelRatio||1,2); c.width = innerWidth*d; c.height = innerHeight*d; c.getContext('2d').setTransform(d,0,0,d,0,0); }
+sizeCanvas(fx);
+function confetti(n){
+  const cols = ['#ff7eb6','#ffd36e','#7ee8fa','#c3b6ff','#3fb950','#ff5f56','#fff'];
+  for (let i=0;i<n;i++){
+    const left = i%2===0;
+    parts.push({ x: left?-10:innerWidth+10, y: innerHeight*0.75, vx:(left?1:-1)*(4+Math.random()*9), vy:-(8+Math.random()*12),
+      r:4+Math.random()*6, c:cols[i%cols.length], a:Math.random()*6, va:(Math.random()-.5)*.4, life:220 });
+  }
+  if (!fxRunning){ fxRunning = true; requestAnimationFrame(fxLoop); }
+}
+function fxLoop(){
+  fctx.clearRect(0,0,innerWidth,innerHeight);
+  parts = parts.filter(p=>p.life-- > 0 && p.y < innerHeight+40);
+  for (const p of parts){
+    p.vy += .32; p.vx *= .985; p.x += p.vx; p.y += p.vy; p.a += p.va;
+    fctx.save(); fctx.translate(p.x,p.y); fctx.rotate(p.a); fctx.fillStyle = p.c;
+    fctx.fillRect(-p.r/2,-p.r/4,p.r,p.r/2); fctx.restore();
+  }
+  if (parts.length) requestAnimationFrame(fxLoop); else { fxRunning=false; fctx.clearRect(0,0,innerWidth,innerHeight); }
+}
+
+/* ================= ФИНАЛ: ЗВЁЗДНОЕ НЕБО + САЛЮТ ================= */
+const sky = document.getElementById('sky'), sctx = sky.getContext('2d');
+let stars = [], shoots = [], sparks = [], skyOn = false, lastBurst = 0;
+function initSky(){
+  sizeCanvas(sky);
+  stars = Array.from({length: Math.round(innerWidth*innerHeight/2600)}, ()=>({
+    x:Math.random()*innerWidth, y:Math.random()*innerHeight, r:Math.random()*1.6+.2, p:Math.random()*6, s:.5+Math.random()*2 }));
+}
+function burst(x,y){
+  const hue = Math.random()*360;
+  for (let i=0;i<70;i++){
+    const a = Math.random()*Math.PI*2, v = 1.5+Math.random()*4.5;
+    sparks.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:60+Math.random()*40,max:100,c:`hsl(${hue+Math.random()*40},100%,${60+Math.random()*20}%)`});
+  }
+}
+function skyLoop(t){
+  if (!skyOn) return;
+  sctx.fillStyle = 'rgba(3,1,10,.35)'; sctx.fillRect(0,0,innerWidth,innerHeight);
+  // туманность
+  for (const s of stars){
+    const o = .35 + .65*Math.abs(Math.sin(t/1000*s.s + s.p));
+    sctx.globalAlpha = o; sctx.fillStyle = '#fff';
+    sctx.beginPath(); sctx.arc(s.x,s.y,s.r,0,7); sctx.fill();
+    if (s.r>1.5){ sctx.globalAlpha=o*.4; sctx.fillRect(s.x-4,s.y-.3,8,.6); sctx.fillRect(s.x-.3,s.y-4,.6,8); }
+  }
+  sctx.globalAlpha = 1;
+  if (Math.random()<.02) shoots.push({x:Math.random()*innerWidth, y:Math.random()*innerHeight*.4, vx:8+Math.random()*6, vy:3+Math.random()*3, life:40});
+  shoots = shoots.filter(s=>s.life-->0);
+  for (const s of shoots){
+    const g = sctx.createLinearGradient(s.x,s.y,s.x-s.vx*8,s.y-s.vy*8);
+    g.addColorStop(0,'rgba(255,255,255,.9)'); g.addColorStop(1,'rgba(255,255,255,0)');
+    sctx.strokeStyle = g; sctx.lineWidth = 2; sctx.beginPath(); sctx.moveTo(s.x,s.y); sctx.lineTo(s.x-s.vx*8,s.y-s.vy*8); sctx.stroke();
+    s.x += s.vx; s.y += s.vy;
+  }
+  if (t - lastBurst > 900){ lastBurst = t; burst(innerWidth*(.15+Math.random()*.7), innerHeight*(.1+Math.random()*.4)); }
+  sparks = sparks.filter(p=>p.life-->0);
+  for (const p of sparks){
+    p.vy += .05; p.vx *= .985; p.vy *= .985; p.x += p.vx; p.y += p.vy;
+    sctx.globalAlpha = p.life/p.max; sctx.fillStyle = p.c;
+    sctx.beginPath(); sctx.arc(p.x,p.y,1.8,0,7); sctx.fill();
+  }
+  sctx.globalAlpha = 1;
+  requestAnimationFrame(skyLoop);
+}
+document.getElementById('final').addEventListener('click', e=>{ if (e.target.tagName!=='BUTTON') burst(e.clientX,e.clientY); });
+addEventListener('resize', ()=>{ sizeCanvas(fx); if (skyOn) initSky(); });
+
+const orbit = document.getElementById('orbit');
+PHOTOS.forEach((p,i)=>{ const im = new Image(); im.src = p.img; im.alt=''; im.style.setProperty('--c', ORBIT_COLORS[i]); orbit.appendChild(im); });
+const wl = document.getElementById('wishes');
+WISHES.forEach((w,i)=>{ const li = document.createElement('li'); li.innerHTML = w; li.style.animationDelay = (0.8 + i*0.35)+'s'; wl.appendChild(li); });
+
+function startFinal(){
+  initSky(); skyOn = true; requestAnimationFrame(skyLoop);
+  setTimeout(playSong, 600);
+  let k = 0; const iv = setInterval(()=>{ confetti(60); if (++k>3) clearInterval(iv); }, 1200);
+}
+document.getElementById('replay').onclick = ()=>{
+  skyOn = false; pos = 0; errors = 0; t0 = null; done = false;
+  document.getElementById('run').style.display='none'; document.getElementById('runText').innerHTML='';
+  document.getElementById('time').textContent='0.0s';
+  const c = document.getElementById('copilot'); c.disabled=false; c.textContent='🤖 позвать Copilot';
+  render(); go(1);
+};
+document.getElementById('music').onclick = playSong;
+
+/* ================= МУЗЫКА: Happy Birthday на WebAudio ================= */
+let AC;
+function audioCtx(){ try{ AC = AC || new (window.AudioContext||window.webkitAudioContext)(); AC.resume && AC.resume(); }catch(e){} return AC; }
+function playSong(){
+  const ac = audioCtx(); if (!ac) return;
+  const N = {C4:261.63,D4:293.66,E4:329.63,F4:349.23,G4:392,A4:440,Bb4:466.16,C5:523.25,D5:587.33,E5:659.25,F5:698.46,G5:783.99};
+  const song = [['G4',.75],['G4',.25],['A4',1],['G4',1],['C5',1],['B4',2],
+                ['G4',.75],['G4',.25],['A4',1],['G4',1],['D5',1],['C5',2],
+                ['G4',.75],['G4',.25],['G5',1],['E5',1],['C5',1],['B4',1],['A4',2],
+                ['F5',.75],['F5',.25],['E5',1],['C5',1],['D5',1],['C5',3]];
+  N.B4 = 493.88;
+  const beat = .42; let t = ac.currentTime + .05;
+  for (const [n,d] of song){
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type = 'triangle'; o.frequency.value = N[n];
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.18,t+.02); g.gain.exponentialRampToValueAtTime(.001,t+d*beat*.95);
+    o.connect(g).connect(ac.destination); o.start(t); o.stop(t+d*beat);
+    t += d*beat;
+  }
+}
+</script>
+</body>
+</html>
